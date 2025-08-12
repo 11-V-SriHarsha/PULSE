@@ -1,0 +1,22 @@
+# docker-compose.yml
+
+version: '3.8'
+services:
+  # Defines our PostgreSQL database service
+  db:
+    image: postgres:15-alpine # Use the official Postgres 15 image (a small version)
+    restart: always # Always restart the container if it stops
+    environment:
+      - POSTGRES_USER=pulseuser
+      - POSTGRES_PASSWORD=supersecret123  # <-- Change this
+      - POSTGRES_DB=pulsedb
+    ports:
+      # Maps port 5432 on your machine to port 5432 in the container
+      - '5433:5432'
+    volumes:
+      # This creates a volume to persist the database data even if the container is removed
+      - pulse-db-data:/var/lib/postgresql/data
+
+volumes:
+  # Defines the named volume for data persistence
+  pulse-db-data:

@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* —— Tokens —— */
+:root {
+  --accent: #22c3a6;          /* teal */
+  --accent-2: #7c8aff;        /* indigo-lite */
+
+  /* Light */
+  --bg: #f7f8fb;
+  --surface: #ffffff;
+  --surface-2: #f3f4f6;
+  --border: #e5e7eb;
+  --text: #0f172a;
+  --text-dim: #6b7280;
+  --ring: rgba(34,195,166,.25);
+}
+
+:root.dark {
+  /* Pulse Dark */
+  --bg: #0a0f1a;              /* page */
+  --surface: #0f172a;         /* cards/nav/sidebar */
+  --surface-2: #111a2e;       /* inputs */
+  --border: #22314f;          /* separators */
+  --text: #e8edf6;            /* main text */
+  --text-dim: #aab4c4;        /* muted */
+  --ring: rgba(124,138,255,.35); /* focus ring */
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+/* Helpers so existing components auto-pick tokens */
+.bg-app         { background: var(--bg); }
+.bg-surface     { background: var(--surface); }
+.bg-surface-2   { background: var(--surface-2); }
+.text-body      { color: var(--text); }
+.text-dim       { color: var(--text-dim); }
+.border-token   { border-color: var(--border); }
+.ring-accent    { box-shadow: 0 0 0 3px var(--ring); }
+
+/* Upgrade common utilities in dark so no refactor needed */
+.dark .bg-white       { background: var(--surface) !important; }
+.dark .bg-gray-50     { background: var(--bg) !important; }
+.dark .text-gray-900  { color: var(--text) !important; }
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-gray-500  { color: var(--text-dim) !important; }
+.dark .border,
+.dark .border-gray-100,
+.dark .border-gray-200 { border-color: var(--border) !important; }
+
+/* Inputs */
+input, select, textarea {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+  transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
+}
+.dark input, .dark select, .dark textarea {
+  background: var(--surface-2);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+  border-color: transparent;
+}
+
+/* Buttons */
+button, .btn {
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { opacity: .92; }
+
+/* Topbar / Sidebar (if they use bg-white) */
+.topbar, .sidebar {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 2px 0 rgba(0,0,0,.05);
+}
+
+/* Card polish */
+.card-elevated {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 24px rgba(0,0,0,.18);
+  border-radius: 1rem;
+}

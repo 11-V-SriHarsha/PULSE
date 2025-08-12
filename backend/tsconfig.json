@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    // --- Key Changes for ES Modules ---
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    // --- Recommended Base Settings ---
+    "target": "es2020",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // --- Project Structure ---
+    "rootDir": "src",
+    "outDir": "dist",
+    
+    // --- Extra Type Safety ---
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // --- For importing JSON files ---
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

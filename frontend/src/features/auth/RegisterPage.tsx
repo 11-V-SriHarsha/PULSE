@@ -25,19 +25,19 @@ export default function RegisterPage() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-      <h1 className="text-2xl font-semibold mb-2 text-center">Create account</h1>
-      <p className="text-sm text-gray-600 mb-6 text-center">Join <span className="font-medium">Pulse</span> and take control of your money.</p>
+    <form onSubmit={onSubmit} className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+      <h1 className="text-2xl font-semibold mb-2 text-center text-gray-900 dark:text-white">Create account</h1>
+      <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 text-center">Join <span className="font-medium text-gray-900 dark:text-white">Pulse</span> and take control of your money.</p>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <Input placeholder="Name (optional)" value={name} onChange={(e) => setName(e.target.value)} />
         <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <Input placeholder="Password (min 8 chars)" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        {err && <div className="text-sm text-red-600 text-center">{err}</div>}
-        <Button type="submit" className="w-full">Register</Button>
-        <div className="text-sm text-gray-600 text-center">
+        {err && <div className="text-sm text-red-600 dark:text-red-400 text-center bg-red-50 dark:bg-red-900/20 p-2 rounded-lg">{err}</div>}
+        <Button type="submit" className="w-full py-3 font-medium">Register</Button>
+        <div className="text-sm text-gray-600 dark:text-gray-300 text-center">
           Already have an account?{' '}
-          <Link to="/auth/login" className="text-[var(--accent)] hover:underline">Sign in</Link>
+          <Link to="/auth/login" className="text-[var(--accent)] hover:underline font-medium">Sign in</Link>
         </div>
       </div>
     </form>

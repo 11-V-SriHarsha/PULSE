@@ -62,3 +62,16 @@ export const setThemeClass = () => {
   const theme = getTheme()
   document.documentElement.classList.toggle('dark', theme === 'dark')
 }
+
+export const getPrefs = () => {
+  try { return JSON.parse(localStorage.getItem('pulse:prefs') || '{}') } catch { return {} }
+}
+export const savePrefs = (p: any) => localStorage.setItem('pulse:prefs', JSON.stringify(p))
+
+export const toggleTheme = () => {
+  const cur = getPrefs()
+  const nextTheme = (cur.theme === 'dark') ? 'light' : 'dark'
+  savePrefs({ ...cur, theme: nextTheme })
+  setThemeClass() // you already export this
+  return nextTheme
+}

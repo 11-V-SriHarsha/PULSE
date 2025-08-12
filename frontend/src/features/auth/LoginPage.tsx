@@ -27,18 +27,18 @@ export default function LoginPage() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-      <h1 className="text-2xl font-semibold mb-2 text-center">Sign in</h1>
-      <p className="text-sm text-gray-600 mb-6 text-center">Welcome back to <span className="font-medium">Pulse</span>.</p>
+    <form onSubmit={onSubmit} className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+      <h1 className="text-2xl font-semibold mb-2 text-center text-gray-900 dark:text-white">Sign in</h1>
+      <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 text-center">Welcome back to <span className="font-medium text-gray-900 dark:text-white">Pulse</span>.</p>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <Input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        {err && <div className="text-sm text-red-600 text-center">{err}</div>}
-        <Button type="submit" className="w-full">Login</Button>
-        <div className="text-sm text-gray-600 text-center">
+        {err && <div className="text-sm text-red-600 dark:text-red-400 text-center bg-red-50 dark:bg-red-900/20 p-2 rounded-lg">{err}</div>}
+        <Button type="submit" className="w-full py-3 font-medium">Login</Button>
+        <div className="text-sm text-gray-600 dark:text-gray-300 text-center">
           New here?{' '}
-          <Link to="/auth/register" className="text-[var(--accent)] hover:underline">Create an account</Link>
+          <Link to="/auth/register" className="text-[var(--accent)] hover:underline font-medium">Create an account</Link>
         </div>
       </div>
     </form>

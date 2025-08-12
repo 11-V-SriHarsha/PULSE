@@ -7,13 +7,12 @@ import { inr, fmtDate, setThemeClass } from '../../lib/format'
 import { Link } from 'react-router-dom'
 
 type Prefs = {
-  theme: 'light' | 'dark'
   dateFormat: 'DD-MM-YYYY' | 'YYYY-MM-DD'
   // advanced (kept but hidden by default)
   currency?: 'INR' | 'INR_COMMAS'
   weekStart?: 'SUN' | 'MON'
 }
-const defaultPrefs: Prefs = { theme: 'light', dateFormat: 'DD-MM-YYYY' }
+const defaultPrefs: Prefs = { dateFormat: 'DD-MM-YYYY' }
 
 const readPrefs = (): Prefs => {
   try { return { ...defaultPrefs, ...(JSON.parse(localStorage.getItem('pulse:prefs') || '{}')) } }
@@ -84,8 +83,7 @@ export default function ProfilePage() {
     return () => { mounted = false }
   }, [])
 
-  // apply theme when changed
-  useEffect(() => { setThemeClass() }, [prefs.theme])
+
 
   const initials = useMemo(() => {
     const s = (user?.name || user?.email || 'U').trim()
@@ -97,7 +95,6 @@ export default function ProfilePage() {
     const next = { ...prefs, [k]: v }
     setPrefs(next)
     writePrefs(next)
-    if (k === 'theme') setThemeClass()
   }
 
   const exportCsv = async () => {
@@ -162,46 +159,121 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="p-6">
-        <div className="flex items-center gap-4">
-          <div className="h-14 w-14 rounded-full bg-[var(--accent)] text-white grid place-items-center text-xl font-bold">
-            {initials}
+      <Card className="p-8 bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-0 shadow-lg">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <div className="relative">
+            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[var(--accent)] to-teal-600 text-white grid place-items-center text-2xl font-bold shadow-lg">
+              {initials}
+            </div>
+            <div className="absolute -bottom-1 -right-1 h-6 w-6 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
           </div>
-          <div className="flex-1">
-            <div className="text-lg font-semibold">{user?.name || 'Your Account'}</div>
-            <div className="text-sm text-gray-500">{user?.email}</div>
-          </div>
-          <div className="text-sm text-gray-500">
-            Member since <span className="font-medium">{user?.createdAt ? fmtDate(user.createdAt) : '—'}</span>
+          <div className="flex-1 min-w-0">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+              {user?.name || 'Your Account'}
+            </div>
+            <div className="text-base text-gray-600 dark:text-gray-300 mb-2">
+              {user?.email}
+            </div>
+            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+              <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+              </svg>
+              Member since {user?.createdAt ? fmtDate(user.createdAt) : '—'}
+            </div>
           </div>
         </div>
       </Card>
 
-      {/* At-a-glance + Export */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="p-4">
-          <div className="text-xs text-gray-500">This Month</div>
-          <div className="mt-2 space-y-1 text-sm">
-            <div>Income: <span className="font-semibold">{inr(monthSummary?.totalIncome ?? 0)}</span></div>
-            <div>Expense: <span className="font-semibold">{inr(monthSummary?.totalExpense ?? 0)}</span></div>
-            <div>Net: <span className="font-semibold">{inr(monthSummary?.netSavings ?? 0)}</span></div>
+      {/* Financial Overview */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">This Month</div>
+            <div className="h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+              <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Income:</span>
+              <span className="font-semibold text-green-600 dark:text-green-400">{inr(monthSummary?.totalIncome ?? 0)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Expense:</span>
+              <span className="font-semibold text-red-600 dark:text-red-400">{inr(monthSummary?.totalExpense ?? 0)}</span>
+            </div>
+            <div className="border-t pt-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-900 dark:text-white">Net:</span>
+                <span className={`font-bold text-lg ${(monthSummary?.netSavings ?? 0) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                  {inr(monthSummary?.netSavings ?? 0)}
+                </span>
+              </div>
+            </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="text-xs text-gray-500">This Year</div>
-          <div className="mt-2 space-y-1 text-sm">
-            <div>Income: <span className="font-semibold">{inr(yearSummary?.totalIncome ?? 0)}</span></div>
-            <div>Expense: <span className="font-semibold">{inr(yearSummary?.totalExpense ?? 0)}</span></div>
-            <div>Net: <span className="font-semibold">{inr(yearSummary?.netSavings ?? 0)}</span></div>
+
+        <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">This Year</div>
+            <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+              <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Income:</span>
+              <span className="font-semibold text-green-600 dark:text-green-400">{inr(yearSummary?.totalIncome ?? 0)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Expense:</span>
+              <span className="font-semibold text-red-600 dark:text-red-400">{inr(yearSummary?.totalExpense ?? 0)}</span>
+            </div>
+            <div className="border-t pt-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-900 dark:text-white">Net:</span>
+                <span className={`font-bold text-lg ${(yearSummary?.netSavings ?? 0) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                  {inr(yearSummary?.netSavings ?? 0)}
+                </span>
+              </div>
+            </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="text-xs text-gray-500">Export</div>
-          <div className="mt-2">
-            <Button onClick={exportCsv} disabled={exporting}>
-              {exporting ? 'Preparing…' : 'Download CSV'}
+
+        <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Export Data</div>
+            <div className="h-8 w-8 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center">
+              <svg className="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <Button 
+              onClick={exportCsv} 
+              disabled={exporting}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5"
+            >
+              {exporting ? (
+                <div className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Preparing…
+                </div>
+              ) : (
+                'Download CSV'
+              )}
             </Button>
-            <div className="mt-2 text-xs text-gray-500">Exports all your transactions.</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+              Exports all your transaction data in CSV format
+            </div>
           </div>
         </Card>
       </div>
@@ -258,27 +330,10 @@ export default function ProfilePage() {
         </Card>
       </div>
 
-      {/* Preferences (trimmed) */}
+      {/* Preferences */}
       <Card className="p-6">
         <div className="font-medium mb-4">Preferences</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Theme */}
-          <div>
-            <div className="text-xs text-gray-500 mb-1">Theme</div>
-            <div className="flex gap-2">
-              <button
-                className={`px-3 py-2 rounded-lg text-sm border ${prefs.theme==='light'?'bg-[var(--accent)] text-white border-transparent':'bg-white hover:bg-gray-50'}`}
-                onClick={() => updatePrefs('theme','light')}
-                type="button"
-              >Light</button>
-              <button
-                className={`px-3 py-2 rounded-lg text-sm border ${prefs.theme==='dark'?'bg-[var(--accent)] text-white border-transparent':'bg-white hover:bg-gray-50'}`}
-                onClick={() => updatePrefs('theme','dark')}
-                type="button"
-              >Dark</button>
-            </div>
-          </div>
-
           {/* Date format */}
           <div>
             <div className="text-xs text-gray-500 mb-1">Date format</div>

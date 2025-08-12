@@ -6,13 +6,18 @@ import { useState } from 'react'
 
 export default function ImportHubPage() {
   const [msg, setMsg] = useState<string>()
+  const [loading, setLoading] = useState(false)
 
   const linkAA = async () => {
+    setLoading(true)
+    setMsg(undefined)
     try {
-      const r = await api.get(API.AA_INIT)
+      const r = await api.get(API.AA_FETCH)
       setMsg(r.data?.message ?? 'Linked and imported from AA mock.')
     } catch (e: any) {
       setMsg(e?.response?.data?.message || 'Failed to import AA data')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -21,8 +26,18 @@ export default function ImportHubPage() {
       <Card className="p-4">
         <div className="font-medium mb-2">Link Bank (AA Mock)</div>
         <p className="text-sm text-gray-600 mb-3">Simulate Account Aggregator consent and fetch transactions.</p>
-        <Button onClick={linkAA}>Import from AA (Mock)</Button>
-        {msg && <div className="mt-3 text-sm">{msg}</div>}
+        <Button onClick={linkAA} disabled={loading}>
+          {loading ? 'Importing...' : 'Import from AA (Mock)'}
+        </Button>
+        {msg && (
+          <div className={`mt-3 text-sm p-2 rounded-lg ${
+            msg.includes('Failed') || msg.includes('error') 
+              ? 'bg-red-50 text-red-700 border border-red-200' 
+              : 'bg-green-50 text-green-700 border border-green-200'
+          }`}>
+            {msg}
+          </div>
+        )}
       </Card>
 
       <Card className="p-4">
